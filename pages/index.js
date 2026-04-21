@@ -170,6 +170,21 @@ export default function Home() {
 
   const submitBooking = async () => {
     if (!form.name || !form.phone || !form.time) return;
+    try {
+      const phoneFormatted = form.phone.startsWith('+') ? form.phone : '+65' + form.phone.replace(/\D/g, '');
+      await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: phoneFormatted,
+          archetype: result ? RESULTS[result].name : '',
+          time: form.time,
+        })
+      });
+    } catch (e) {
+      console.error('Airtable submission error:', e);
+    }
     setStage('booked');
   };
 
